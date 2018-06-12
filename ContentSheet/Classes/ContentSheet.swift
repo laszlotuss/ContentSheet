@@ -813,6 +813,20 @@ extension UIViewController: ContentSheetContentProtocol {
 }
 
 
+extension UITableViewController {
+    
+    open override func scrollViewToObserve(containedIn contentSheet: ContentSheet) -> UIScrollView? {
+        return tableView
+    }
+}
+
+extension UICollectionViewController {
+    
+    open override func scrollViewToObserve(containedIn contentSheet: ContentSheet) -> UIScrollView? {
+        return collectionView
+    }
+}
+
 extension UINavigationController {
     
     open override func collapsedHeight(containedIn contentSheet: ContentSheet) -> CGFloat {
@@ -841,6 +855,25 @@ extension UINavigationController {
     }
 }
 
+extension UITabBarController {
+
+    fileprivate var _activeViewController: UIViewController? {
+        return self.selectedViewController ?? self.viewControllers?.first
+    }
+
+    open override func collapsedHeight(containedIn contentSheet: ContentSheet) -> CGFloat {
+        return _activeViewController?.collapsedHeight(containedIn: contentSheet) ?? UIScreen.main.bounds.height*0.5
+    }
+    
+    //Returning the same height as collapsed height by default
+    open override func expandedHeight(containedIn contentSheet: ContentSheet) -> CGFloat {
+        return _activeViewController?.expandedHeight(containedIn: contentSheet) ?? self.collapsedHeight(containedIn: contentSheet)
+    }
+    
+    open override func scrollViewToObserve(containedIn contentSheet: ContentSheet) -> UIScrollView? {
+        return _activeViewController?.scrollViewToObserve(containedIn: contentSheet)
+    }
+}
 
 extension UIView: ContentSheetContentProtocol {
     
