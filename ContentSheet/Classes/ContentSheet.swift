@@ -488,11 +488,15 @@ extension ContentSheet {
 
             // manipulate frame if gesture is in progress
             if recognizer.state == .began || recognizer.state == .changed {
-                if (y + translation.y >= totalHeight - expandedHeight) && (y + translation.y <= totalHeight/* - collapsedHeight*/) {
-                    let frame = CGRect(x: 0, y: y + translation.y, width: contentView.frame.width, height: totalHeight - (y + translation.y))
+                let yDiff = y + translation.y
+                if (yDiff >= totalHeight - expandedHeight) && (yDiff <= totalHeight/* - collapsedHeight*/) {
+                    let frame = CGRect(x: 0, y: yDiff, width: contentView.frame.width, height: totalHeight - yDiff)
                     recognizer.setTranslation(CGPoint.zero, in: self.view)
                     
                     _contentContainer.frame = frame
+                } else {
+                    _contentContainer.frame.origin.y = totalHeight - expandedHeight
+                    _contentContainer.frame.size.height = totalHeight
                 }
             }
 
@@ -589,7 +593,7 @@ extension ContentSheet {
                     var subviewFrame = CGRect(x: 0, y: 0, width: frame.width, height: HeaderMaxHeight)
                     navigationBar.frame = subviewFrame
                     
-                    subviewFrame.origin.y = subviewFrame.maxY
+                    subviewFrame.origin.y = subviewFrame.maxY - UIApplication.shared.statusBarFrame.size.height
                     subviewFrame.size.height = frame.height - subviewFrame.origin.y
                     
                     contentView.frame = subviewFrame
@@ -599,7 +603,7 @@ extension ContentSheet {
                     navigationBar.frame = subviewFrame
                     
                     subviewFrame.origin.y = subviewFrame.maxY
-                    subviewFrame.size.height = frame.height - subviewFrame.origin.y
+                    subviewFrame.size.height = max(expandedHeight, frame.height - subviewFrame.origin.y)
                     
                     contentView.frame = subviewFrame
                 }
