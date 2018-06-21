@@ -251,6 +251,7 @@ public class ContentSheet: UIViewController {
     public required init(content: ContentSheetContentProtocol) {
         _content = content
         super.init(nibName: nil, bundle: nil)
+        transitioningDelegate = _transitionController
     }
     
     //MARK: View lifecycle
@@ -408,18 +409,6 @@ public class ContentSheet: UIViewController {
         
         //Notify delegate view did disappear
         delegate?.contentSheetDidDisappear?(self)
-    }
-    
-    
-    //Overrides
-    //Transition
-    public override var transitioningDelegate: UIViewControllerTransitioningDelegate? {
-        get {
-            return _transitionController
-        }
-        set {
-            fatalError("Attempt to set transition delegate of content sheet, which is a read only property.")
-        }
     }
     
     //Status bar
